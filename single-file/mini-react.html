@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Mini React</title>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    // Mini React实现
+    function createElement(type, props, ...children) {
+      return {
+        type,
+        props: {
+          ...props,
+          children: children.map(child =>
+            typeof child === "object" ? child : createTextElement(child)
+          ),
+        },
+      };
+    }
+
+    function createTextElement(text) {
+      return {
+        type: "TEXT_ELEMENT",
+        props: {
+          nodeValue: text,
+          children: [],
+        },
+      };
+    }
+
+    function render(element, container) {
+      // 处理函数组件
+      if (typeof element.type === "function") {
+        const childElement = element.type(element.props);
+        return render(childElement, container);
+      }
+
+      const dom =
+        element.type == "TEXT_ELEMENT"
+          ? document.createTextNode("")
+          : document.createElement(element.type);
+
+      const isProperty = key => key !== "children";
+      const isEvent = key => key.startsWith("on");
+      
+      // 设置属性
+      Object.keys(element.props)
+        .filter(isProperty)
+        .forEach(name => {
+          dom[name] = element.props[name];
+        });
+
+      // 添加事件监听
+      Object.keys(element.props)
+        .filter(isEvent)
+        .forEach(name => {
+          const eventType = name.toLowerCase().substring(2);
+          console.log(`Adding event listener for ${eventType}`);
+          dom.addEventListener(eventType, element.props[name]);
+        });
+
+      element.props.children.forEach(child =>
+        render(child, dom)
+      );
+
+      container.appendChild(dom);
+    }
+
+    // 状态管理
+    let hookIndex = 0;
+    let hooks = [];
+    
+    function useState(initial) {
+      const currentIndex = hookIndex++;
+      hooks[currentIndex] = hooks[currentIndex] || initial;
+      
+      function setState(newState) {
+        hooks[currentIndex] = newState;
+        scheduleRender();
+      }
+      
+      return [hooks[currentIndex], setState];
+    }
+
+    let isRendering = false;
+    function scheduleRender() {
+      if (!isRendering) {
+        isRendering = true;
+        requestAnimationFrame(() => {
+          document.getElementById("root").innerHTML = "";
+          hookIndex = 0;
+          render(createElement(App), document.getElementById("root"));
+          isRendering = false;
+        });
+      }
+    }
+
+    // 初始渲染
+    scheduleRender();
+
+    // 示例组件
+    function Counter() {
+      const [count, setCount] = useState(0);
+
+      return (
+        createElement("div", null,
+          createElement("h1", null, "Count: ", count),
+          createElement("button", { 
+            onClick: () => setCount(count + 1) 
+          }, "+"),
+          createElement("button", { 
+            onClick: () => setCount(count - 1) 
+          }, "-")
+        )
+      );
+    }
+
+    function App() {
+      return createElement(Counter);
+    }
+
+    // 渲染应用
+    render(createElement(App), document.getElementById("root"));
+  </script>
+</body>
+</html>
