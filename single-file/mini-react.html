@@ -7,7 +7,13 @@
   <div id="root"></div>
 
   <script>
-    // Mini React实现
+    /**
+     * 创建虚拟DOM元素
+     * @param {string|Function} type - 元素类型，可以是HTML标签名或函数组件
+     * @param {object} props - 元素属性
+     * @param {...any} children - 子元素
+     * @returns {object} 虚拟DOM对象
+     */
     function createElement(type, props, ...children) {
       return {
         type,
@@ -20,6 +26,11 @@
       };
     }
 
+    /**
+     * 创建文本虚拟DOM元素
+     * @param {string} text - 文本内容
+     * @returns {object} 文本虚拟DOM对象
+     */
     function createTextElement(text) {
       return {
         type: "TEXT_ELEMENT",
@@ -30,6 +41,11 @@
       };
     }
 
+    /**
+     * 将虚拟DOM渲染到真实DOM中
+     * @param {object} element - 虚拟DOM元素
+     * @param {HTMLElement} container - 容器元素
+     */
     function render(element, container) {
       // 处理函数组件
       if (typeof element.type === "function") {
@@ -69,9 +85,14 @@
     }
 
     // 状态管理
-    let hookIndex = 0;
-    let hooks = [];
+    let hookIndex = 0; // 当前hook的索引
+    let hooks = []; // 存储所有hook状态的数组
     
+    /**
+     * 实现useState hook
+     * @param {any} initial - 初始状态值
+     * @returns {[any, Function]} 返回当前状态和更新状态的函数
+     */
     function useState(initial) {
       const currentIndex = hookIndex++;
       hooks[currentIndex] = hooks[currentIndex] || initial;
@@ -84,7 +105,11 @@
       return [hooks[currentIndex], setState];
     }
 
-    let isRendering = false;
+    let isRendering = false; // 防止重复渲染的标志
+    
+    /**
+     * 调度渲染，使用requestAnimationFrame优化性能
+     */
     function scheduleRender() {
       if (!isRendering) {
         isRendering = true;
@@ -100,7 +125,10 @@
     // 初始渲染
     scheduleRender();
 
-    // 示例组件
+    /**
+     * 计数器组件示例
+     * 展示如何使用useState hook管理状态
+     */
     function Counter() {
       const [count, setCount] = useState(0);
 
@@ -117,6 +145,10 @@
       );
     }
 
+    /**
+     * 根组件
+     * 渲染Counter组件
+     */
     function App() {
       return createElement(Counter);
     }
