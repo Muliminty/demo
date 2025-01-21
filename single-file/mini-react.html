@@ -5,6 +5,20 @@
   <!-- 引入 Babel 编译器以便支持 JSX 语法 -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
+<style>
+  .btn{
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+</style>
 <body>
   <div id="root"></div> <!-- 渲染 React 组件的根容器 -->
 
@@ -123,7 +137,17 @@
         Object.keys(element.props)
           .filter(isProperty)
           .forEach(name => {
-            dom[name] = element.props[name];  // 赋值属性，如 className、style 等
+            if (name === 'style') {
+              // 处理 style 对象
+              const style = element.props[name];
+              Object.keys(style).forEach(styleName => {
+                // 将驼峰式属性名转换为 CSS 属性名
+                const cssName = styleName.replace(/([A-Z])/g, '-$1').toLowerCase();
+                dom.style[cssName] = style[styleName];
+              });
+            } else {
+              dom[name] = element.props[name];  // 赋值其他属性
+            }
           });
 
         // 绑定事件监听
@@ -152,9 +176,9 @@
       // 组件的 JSX 语法，返回虚拟 DOM
       return (
         <div>
-          <h1>Count: {count}</h1>
-          <button onClick={() => setCount(count + 1)}>+</button>
-          <button onClick={() => setCount(count - 1)}>-</button>
+          <h1 style={{ color: "blue"}}>Count: {count}</h1>
+          <button className='btn' onClick={() => setCount(count + 1)}>+</button>
+          <button className='btn' onClick={() => setCount(count - 1)}>-</button>
         </div>
       );
     }
