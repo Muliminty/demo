@@ -137,6 +137,7 @@
         Object.keys(element.props)
           .filter(isProperty)
           .forEach(name => {
+            // Babel 在处理 JSX 语法时，会自动将 className 转换为 class,这里不需要自己处理
             if (name === 'style') {
               // 处理 style 对象
               const style = element.props[name];
