@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>nav</title>
+</head>
+
+<body>
+
+    <div>nav组件</div>
+    <!-- components/nav.html -->
+    <ul class="nav-list"></ul>
+
+</body>
+
+<script>
+
+    window.addEventListener('message', (event) => {
+        console.log('Message received', event);  // 添加调试信息
+        // 安全验证
+        if (event.origin !== window.location.origin) return;
+
+        // 协议版本校验
+        const message = event.data
+        if (message.protocol !== 'COMPONENT_COMMUNICATION_V1') return;
+
+        console.log('---' + message.payload)
+        // 处理具体指令
+        switch (message.command) {
+            case 'UPDATE_NAV':
+                renderNavList(message.payload.list);
+                break;
+            // 其他命令处理...
+        }
+    });
+
+
+    function renderNavList(list) {
+        console.log(list)
+        const container = document.querySelector('.nav-list');
+        container.innerHTML = list.map(item => `
+    <li>
+      <a>${item.name}</a>
+    </li>
+  `).join('');
+    }
+</script>
+
+
+</html>
