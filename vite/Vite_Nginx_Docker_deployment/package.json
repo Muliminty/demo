@@ -1,5 +1,5 @@
 {
-  "name": "Vite_Nginx_Docker_deployment",
+  "name": "vite_nginx_docker_deployment",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "rollup": "^4.34.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.19.0",

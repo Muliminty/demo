@@ -8,8 +8,8 @@
 ### **1.1 创建 Vite 项目**
 
 ```sh
-npm create vite@latest Vite_Nginx_Docker_deployment --template react
-cd Vite_Nginx_Docker_deployment
+npm create vite@latest vite_nginx_docker_deployment --template react
+cd vite_nginx_docker_deployment
 npm install
 ```
 
@@ -60,7 +60,7 @@ npm run build
 
 ### **3.1 创建 `nginx.conf`**
 
-在 `Vite_Nginx_Docker_deployment/nginx.conf` 中添加：
+在 `vite_nginx_docker_deployment/nginx.conf` 中添加：
 
 ```nginx
 server {
@@ -71,13 +71,6 @@ server {
         root /usr/share/nginx/html;
         index index.html;
         try_files $uri /index.html;
-    }
-
-    location /api/ {
-        proxy_pass http://backend:3000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     }
 }
 ```
@@ -93,22 +86,34 @@ server {
 
 ### **4.1 创建 `Dockerfile`**
 
-在 `Vite_Nginx_Docker_deployment/Dockerfile` 添加：
+在 `vite_nginx_docker_deployment/Dockerfile` 添加：
 
 ```dockerfile
-# 使用 Node 构建前端
-FROM node:18 AS builder
-WORKDIR /app
-COPY . .
-RUN npm install && npm run build
+   # 使用完整 Node.js 镜像
+   FROM node:22.11.0 AS builder
+   WORKDIR /app
 
-# 使用 Nginx 作为 Web 服务器
-FROM nginx:latest
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+   # 复制 package.json 和 package-lock.json（如果有的话）
+   COPY package*.json ./
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+   RUN npm config rm proxy \
+       && npm config rm https-proxy \
+       && npm config set registry https://registry.npmmirror.com \
+       && npm cache clean -force \
+       && npm install
+
+   # 复制剩余文件并构建
+   COPY . .
+   RUN npm run build
+
+   # 使用 Nginx 作为 Web 服务器
+   FROM nginx:alpine
+   COPY --from=builder /app/dist /usr/share/nginx/html
+   COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+   EXPOSE 80
+   CMD ["nginx", "-g", "daemon off;"]
 ```
 
 这里：
@@ -124,7 +129,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 ### **5.1 创建 `docker-compose.yml`**
 
-在 `Vite_Nginx_Docker_deployment/docker-compose.yml` 添加：
+在 `vite_nginx_docker_deployment/docker-compose.yml` 添加：
 
 ```yaml
 version: '3'
@@ -136,16 +141,6 @@ services:
       - "8080:80"
     depends_on:
       - backend
-
-  backend:
-    image: node:18
-    container_name: backend-server
-    working_dir: /app
-    volumes:
-      - ./backend:/app
-    command: ["node", "server.js"]
-    ports:
-      - "3000:3000"
 ```
 
 - `frontend`：`Vite` 打包后交给 `Nginx`，对外提供 `http://localhost:8080`
@@ -158,9 +153,24 @@ services:
 ### **6.1 直接运行 Docker**
 
 ```sh
-docker build -t my-vite-nginx .
-docker run -d -p 8080:80 my-vite-nginx
+docker build -t vite_nginx_docker_deployment .
+docker run -d -p 8080:80 vite_nginx_docker_deployment
 ```
+
+如果网络问题暂时无法解决，可以尝试手动拉取镜像：
+
+```
+   docker pull nginx:alpine
+   docker pull node:22.11.0
+```
+
+拉取完成后，运行以下命令查看本地镜像：
+
+```
+   REPOSITORY   TAG             IMAGE ID       CREATED       SIZE
+   node         22.11.0         abcdef123456   2 weeks ago   120MB
+```
+
 
 然后访问 `http://localhost:8080`，查看 Vite 部署是否成功。
 
@@ -182,29 +192,29 @@ docker-compose up -d
 1. **打包 Docker 镜像**
     
     ```sh
-    docker save my-vite-nginx > my-vite-nginx.tar
+    docker save vite_nginx_docker_deployment > vite_nginx_docker_deployment.tar
     ```
     
 2. **上传到服务器**
     
     ```sh
-    scp my-vite-nginx.tar user@your-server:/home/user/
+    scp vite_nginx_docker_deployment.tar user@your-server:/home/user/
     ```
     
 3. **在服务器上加载并运行**
     
     ```sh
-    docker load < my-vite-nginx.tar
-    docker run -d -p 80:80 my-vite-nginx
+    docker load < vite_nginx_docker_deployment.tar
+    docker run -d -p 80:80 vite_nginx_docker_deployment
     ```
     
 
 如果使用 `docker-compose`：
 
 ```sh
-scp -r Vite_Nginx_Docker_deployment user@your-server:/home/user/
+scp -r vite_nginx_docker_deployment user@your-server:/home/user/
 ssh user@your-server
-cd /home/user/Vite_Nginx_Docker_deployment
+cd /home/user/vite_nginx_docker_deployment
 docker-compose up -d
 ```
 
