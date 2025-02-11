@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IntersectionObserver Demo</title>
+  <style>
+    /* 基本样式设定 */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    /* 模拟图片的 div 样式 */
+    .image-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .image {
+      width: 48%;
+      height: 200px;
+      margin-bottom: 10px;
+      background-color: #ddd;
+      /* 默认背景色 */
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      opacity: 0;
+      /* 默认透明 */
+      transform: scale(0.8);
+      /* 初始缩小 */
+    }
+
+    .image[data-visible="true"] {
+      opacity: 1;
+      /* 当加载完成时变为可见 */
+      transform: scale(1);
+      /* 放大到正常大小 */
+    }
+
+    /* 动画触发区域 */
+    .scroll-section {
+      height: 100vh;
+      background-color: #f9f9f9;
+      margin: 20px 0;
+    }
+
+    .animate-on-scroll {
+      opacity: 0;
+      transition: opacity 1s ease-in-out, transform 1s ease-in-out;
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      margin: 20px 0;
+      transform: translateY(50px);
+      /* 初始位置稍微向下 */
+    }
+
+    .animate-on-scroll.animate {
+      opacity: 1;
+      transform: translateY(0);
+      /* 过渡到正常位置 */
+    }
+
+    /* Sentinel元素，用于触发无限滚动 */
+    #sentinel {
+      height: 20px;
+      background-color: transparent;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
+      font-size: 20px;
+      color: #999;
+    }
+
+    /* 新内容加载后样式 */
+    .new-content {
+      background-color: #FFEB3B;
+      padding: 30px;
+      margin-bottom: 20px;
+      text-align: center;
+      color: #333;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>IntersectionObserver Demo</h1>
+
+    <div style="height: 90vh; width: 100%; background-color: #999;">占位</div>
+    <!-- 模拟图片的区域 -->
+    <div class="image-container">
+      <div class="image" data-visible="false" style="background-color: #FF5733;"></div>
+      <div class="image" data-visible="false" style="background-color: #33FF57;"></div>
+      <div class="image" data-visible="false" style="background-color: #3357FF;"></div>
+      <div class="image" data-visible="false" style="background-color: #F0E130;"></div>
+    </div>
+
+    <!-- 动画触发区域 -->
+    <div class="scroll-section">
+      <div class="animate-on-scroll">Scroll down to see the animation!</div>
+    </div>
+
+    <!-- 无限滚动加载区域 -->
+    <div class="scroll-section">
+      <div class="loading">Loading more content...</div>
+      <div id="sentinel"></div>
+    </div>
+  </div>
+
+  <script>
+    // 1. 创建 IntersectionObserver 观察器用于懒加载“图片”
+    const images = document.querySelectorAll('.image');
+
+    // 图片懒加载的回调函数
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        // 判断当前"图片"是否进入视口
+        if (entry.isIntersecting) {
+          const image = entry.target;
+          image.setAttribute('data-visible', 'true');  // 模拟图片加载完成
+          observer.unobserve(image);  // 停止观察该元素
+        }
+      });
+    }, {
+      threshold: 1  // 设置阈值，当图片至少有 10% 进入视口时触发
+    });
+
+    // 观察所有的模拟图片
+    images.forEach(image => {
+      imageObserver.observe(image);
+    });
+
+    // 2. 创建 IntersectionObserver 观察器用于触发动画
+    const animateElements = document.querySelectorAll('.animate-on-scroll');
+
+    // 动画触发的回调函数
+    const animationObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        // 判断元素是否进入视口
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate'); // 添加动画效果
+          animationObserver.unobserve(entry.target); // 动画完成后停止观察该元素
+        }
+      });
+    }, {
+      threshold: 0.5 // 设置阈值，元素至少有 50% 进入视口时才会触发
+    });
+
+    // 观察所有需要动画的元素
+    animateElements.forEach(element => {
+      animationObserver.observe(element);
+    });
+
+    // 3. 创建 IntersectionObserver 观察器用于无限滚动加载
+    const sentinel = document.querySelector('#sentinel'); // 获取 sentinel 元素
+    const loadingText = document.querySelector('.loading'); // 获取加载文本
+
+    let loading = false; // 用于控制加载状态，避免重复加载
+
+    // 无限滚动加载的回调函数
+    const infiniteScrollObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        // 判断 sentinel 元素是否进入视口，且当前没有正在加载
+        if (entry.isIntersecting && !loading) {
+          loading = true; // 设置为加载中
+          loadingText.textContent = 'Loading more content...'; // 显示加载中提示
+
+          // 模拟异步加载新的内容
+          setTimeout(() => {
+            loadingText.textContent = 'No more content to load.'; // 加载完成后更新提示
+            loading = false; // 设置为加载完成
+
+            // 创建新的内容并添加到页面
+            const newContent = document.createElement('div');
+            newContent.classList.add('scroll-section');
+            newContent.classList.add('new-content');
+            newContent.textContent = 'New content loaded! 🎉';
+            document.querySelector('.container').appendChild(newContent);
+
+            // 重新观察新的 sentinel 元素，以便继续无限加载
+            observer.observe(sentinel);
+          }, 1500); // 模拟延迟加载
+        }
+      });
+    }, {
+      rootMargin: '0px', // 可视区域的边距
+      threshold: 1.0 // 设置阈值，sentinel 元素完全进入视口时触发
+    });
+
+    // 观察 sentinel 元素
+    infiniteScrollObserver.observe(sentinel);
+  </script>
+
+</body>
+
+</html>
