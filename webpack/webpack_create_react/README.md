@@ -39,15 +39,16 @@ npm install react@19.0.0 react-dom@19.0.0
 
 运行以下命令安装 **开发依赖（devDependencies）**：
 ```sh
-npm install -D @babel/core@7.26.8 \
-  @babel/plugin-transform-runtime@7.26.8 \
-  @babel/preset-env@7.26.8 \
-  @babel/preset-react@7.26.3 \
-  babel-loader@9.2.1 \
-  html-webpack-plugin@5.6.3 \
-  webpack@5.97.1 \
-  webpack-cli@6.0.1 \
-  webpack-dev-server@5.2.0
+npm install -D @babel/core@7.26.8
+npm install -D @babel/plugin-transform-runtime@7.26.8
+npm install -D @babel/preset-env@7.26.8
+npm install -D @babel/preset-react@7.26.3
+npm install -D babel-loader@9.2.1
+npm install -D html-webpack-plugin@5.6.3
+npm install -D webpack@5.97.1
+npm install -D webpack-cli@6.0.1
+npm install -D webpack-dev-server@5.2.0
+
 ```
 
 #### 依赖作用说明
@@ -65,6 +66,42 @@ npm install -D @babel/core@7.26.8 \
 - `webpack-dev-server`：本地开发服务器，支持热更新，提高开发效率。
 
 
+
+##### 完整配置文件
+
+```json
+{
+  "name": "webpack_create_react",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack serve --mode development",
+    "build": "NODE_ENV=production webpack --progress",
+    "analyze": "npm_config_report=true npm run build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.8",
+    "@babel/plugin-transform-runtime": "^7.26.8",
+    "@babel/preset-env": "^7.26.8",
+    "@babel/preset-react": "^7.26.3",
+    "babel-loader": "^9.2.1",
+    "html-webpack-plugin": "^5.6.3",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
+  }
+}
+
+```
 
 ## 2. Webpack 深度配置
 
