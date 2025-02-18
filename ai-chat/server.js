@@ -1,10 +1,16 @@
 const express = require('express');
 const cors = require('cors');
-const app = express();
+const path = require('path');
 
-// 启用CORS和JSON解析中间件
-app.use(cors());
-app.use(express.json());
+// 创建API服务器
+const apiApp = express();
+apiApp.use(cors());
+apiApp.use(express.json());
+
+// 创建静态文件服务器
+const staticApp = express();
+staticApp.use(express.static(path.join(__dirname)));
+
 
 // 模拟流式响应的辅助函数
 async function* generateResponse(message) {
@@ -43,7 +49,7 @@ async function* generateResponse(message) {
 }
 
 // 处理聊天请求的路由
-app.post('/chat', async (req, res) => {
+apiApp.post('/chat', async (req, res) => {
     const { message } = req.body;
     
     // 设置响应头，启用流式传输
@@ -58,8 +64,14 @@ app.post('/chat', async (req, res) => {
     res.end();
 });
 
-// 启动服务器
-const PORT = 3000;
-app.listen(PORT, () => {
-    console.log(`服务器运行在 http://localhost:${PORT}`);
+// 启动API服务器
+const API_PORT = 3000;
+apiApp.listen(API_PORT, () => {
+    console.log(`API服务器运行在 http://localhost:${API_PORT}`);
+});
+
+// 启动静态文件服务器
+const STATIC_PORT = 8080;
+staticApp.listen(STATIC_PORT, () => {
+    console.log(`静态文件服务器运行在 http://localhost:${STATIC_PORT}`);
 });

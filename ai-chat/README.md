@@ -34,7 +34,7 @@ node server.js
 
 3. 访问应用：
 ```
-http://localhost:3000
+http://localhost:8080
 ```
 
 ## 项目结构
