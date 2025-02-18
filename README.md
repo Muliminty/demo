@@ -20,7 +20,9 @@
 该项目展示了如何使用 Webpack 5 构建一个 React 19 项目。涵盖了 Webpack 配置、模块打包、代码分割等技术，适合想要了解前端构建工具的开发者。
 
 ### 6. [完整流程：Vite + Nginx + Docker 部署](./vite/vite_nginx_docker_deployment/README.md)
-此项目展示了如何通过 Vite 构建前端项目，并结合 Nginx 和 Docker 完成完整的部署流程。适合开发者了解前后端分离部署及现代化工具链的结合应用。
+
+### 7. [AI 聊天示例 - 流式响应实现](./ai-chat/README.md)
+这是一个基于 Node.js 的流式响应聊天应用示例。该项目展示了如何实现实时的聊天界面，包括前端的流式数据处理和后端的模拟响应实现，适合学习 Node.js 流式响应和前端数据处理技术。
 
 ---
 
