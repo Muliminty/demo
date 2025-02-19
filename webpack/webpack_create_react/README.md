@@ -356,3 +356,179 @@ module: {
 ---
 
 通过本指南，你不仅完成了基础的 React 项目搭建，更建立了现代前端工程化的核心认知。后续可基于此模板扩展路由管理、状态管理、性能优化等进阶功能。
+
+
+--
+
+
+### 集成 React Router
+
+```bash
+npm install react-router-dom
+```
+
+创建几个示例页面组件：
+
+```jsx
+// webpack\webpack_create_react\src\pages\home\index.jsx
+import React from 'react'
+
+const Home = () => (
+    <div>
+        <h1>首页</h1>
+        <p>欢迎来到 React 应用</p>
+    </div>
+)
+
+export default Home
+```
+
+```jsx
+// webpack\webpack_create_react\src\pages\about\index.jsx
+
+import React from 'react'
+
+const About = () => (
+    <div>
+        <h1>关于我们</h1>
+        <p>这是一个使用 Webpack 5 构建的 React 19 应用</p>
+    </div>
+)
+
+export default About
+```
+
+```
+import React from 'react'
+import { Outlet, Link } from 'react-router-dom'
+
+const User = () => (
+    <div className="user-center">
+        <h1>用户中心</h1>
+        <nav>
+            <ul>
+                <li>
+                    <Link to="profile">个人资料</Link>
+                </li>
+                <li>
+                    <Link to="settings">账户设置</Link>
+                </li>
+            </ul>
+        </nav>
+        <div className="user-content">
+            <Outlet />
+        </div>
+    </div>
+)
+
+export default User
+```
+
+然后配置路由
+
+```javascript
+// webpack\webpack_create_react\src\routes\config.js
+
+import { lazy } from 'react';
+
+const routes = [
+    {
+        path: '/',
+        component: lazy(() => import('@/pages/home')),
+        name: '首页'
+    },
+    {
+        path: '/about',
+        component: lazy(() => import('@/pages/about')),
+        name: '关于'
+    },
+    {
+        path: '/user',
+        component: lazy(() => import('@/pages/user')),
+        name: '用户中心',
+        children: [
+            {
+                path: 'profile',
+                component: lazy(() => import('@/pages/user/profile')),
+                name: '个人资料'
+            },
+            {
+                path: 'settings',
+                component: lazy(() => import('@/pages/user/settings')),
+                name: '账户设置'
+            }
+        ]
+    }
+];
+
+export default routes;
+
+```
+
+实现路由注册函数
+
+```javascript
+// webpack\webpack_create_react\src\routes\index.js
+import React from 'react'
+import { Route } from 'react-router-dom'
+
+const renderRoutes = (routes) => {
+    return routes.map(route => {
+        if (route.children) {
+            return (
+                <Route key={route.path} path={route.path} element={<route.component />}>
+                    {renderRoutes(route.children)}
+                </Route>
+            );
+        }
+        return (
+            <Route
+                key={route.path}
+                path={route.path}
+                element={<route.component />}
+            />
+        );
+    });
+};
+
+
+export default renderRoutes
+
+
+```
+
+在App 渲染路由
+
+```jsx
+import React, { Suspense } from 'react'
+import { BrowserRouter, Routes,Link } from 'react-router-dom'
+import routes from '@/routes/config'
+import renderRoutes from '@/routes'
+
+
+const App = () => (
+    <BrowserRouter>
+        <div className="app-container">
+            <nav>
+                <ul>
+                    {routes.map(route => (
+                        <li key={route.path}>
+                            <Link to={route.path}>{route.name}</Link>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
+
+            <main>
+                <Suspense fallback={<div>加载中...</div>}>
+                    <Routes>
+                        {renderRoutes(routes)}
+                    </Routes>
+                </Suspense>
+            </main>
+        </div>
+    </BrowserRouter>
+)
+
+export default App
+```
