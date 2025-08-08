@@ -37,3 +37,6 @@ Nginx 配置文件、常用场景、日志管理等详细文档，适合 Web 服
 
 ### 11. [Webpack 构建 React 项目](./webpack/webpack_create_react/README.md)
 Webpack 5 搭建 React 19 项目指南，涵盖配置、打包与代码分割。
+
+### 12. [游戏](./game/README.md)
+营销游戏 老虎机大转盘摇摇乐
