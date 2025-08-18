@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>保存Div为图片 Demo</title>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      background: #f5f5f5;
+    }
+
+    #capture {
+      width: 300px;
+      height: 200px;
+      background: linear-gradient(135deg, #42a5f5, #478ed1);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border-radius: 10px;
+      user-select: none;
+      margin-bottom: 20px;
+    }
+
+    #saveBtn {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #42a5f5;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    #saveBtn:active {
+      background: #357ab7;
+    }
+
+    /* 自定义右键菜单 */
+    #contextMenu {
+      position: absolute;
+      display: none;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+    }
+
+    #contextMenu ul {
+      margin: 0;
+      padding: 5px 0;
+      list-style: none;
+    }
+
+    #contextMenu li {
+      padding: 8px 20px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    #contextMenu li:hover {
+      background: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="capture">长按/点击/右键保存</div>
+  <button id="saveBtn">点击保存</button>
+
+  <!-- 自定义右键菜单 -->
+  <div id="contextMenu">
+    <ul>
+      <li id="saveImageOption">保存为图片</li>
+    </ul>
+  </div>
+
+  <script>
+    const captureDiv = document.getElementById("capture");
+    const saveBtn = document.getElementById("saveBtn");
+    const contextMenu = document.getElementById("contextMenu");
+    const saveImageOption = document.getElementById("saveImageOption");
+    let timer = null;
+
+    // 判断是否是移动端
+    function isMobile() {
+      return /Mobi|Android|iPhone/i.test(navigator.userAgent);
+    }
+
+    // 长按保存（移动端）
+    captureDiv.addEventListener("touchstart", () => {
+      timer = setTimeout(() => {
+        saveDivAsImage();
+      }, 800);
+    });
+    captureDiv.addEventListener("touchend", () => clearTimeout(timer));
+    captureDiv.addEventListener("touchmove", () => clearTimeout(timer));
+
+    // 点击按钮保存
+    saveBtn.addEventListener("click", saveDivAsImage);
+
+    // 右键菜单
+    captureDiv.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      contextMenu.style.display = "block";
+      contextMenu.style.left = e.pageX + "px";
+      contextMenu.style.top = e.pageY + "px";
+    });
+
+    saveImageOption.addEventListener("click", () => {
+      saveDivAsImage();
+      hideContextMenu();
+    });
+
+    document.addEventListener("click", () => hideContextMenu());
+
+    function hideContextMenu() {
+      contextMenu.style.display = "none";
+    }
+
+    // 保存方法（PC 下载 / 手机新开窗口）
+    function saveDivAsImage() {
+      html2canvas(captureDiv).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+
+        if (isMobile()) {
+          // 移动端：新开窗口 → 用户长按保存
+          const newWindow = window.open();
+          newWindow.document.write('<img src="' + imgData + '" style="width:100%">');
+        } else {
+          // PC：直接下载
+          const link = document.createElement("a");
+          link.href = imgData;
+          link.download = "div.png";
+          link.click();
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

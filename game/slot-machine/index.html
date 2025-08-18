@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>React 老虎机</title>
+
+  <!-- React & Babel CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #222;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .slot-machine {
+      text-align: center;
+    }
+
+    .reels {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .reel {
+      width: 80px;
+      height: 80px;
+      overflow: hidden;
+      border: 2px solid #fff;
+      margin: 0 10px;
+      background: #000;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .symbols {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .symbol {
+      height: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 2.5rem;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      background: #f90;
+      border: none;
+      border-radius: 5px;
+      color: #000;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #fb0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function SlotMachine() {
+      const symbolsList = ['🍒', '🍋', '🍉', '⭐', '🔔', '💎'];
+      const [reels, setReels] = useState([
+        { spinning: false, position: 0, final: 0 },
+        { spinning: false, position: 0, final: 0 },
+        { spinning: false, position: 0, final: 0 },
+      ]);
+      const [result, setResult] = useState('');
+
+      const spinReels = () => {
+        setResult('');
+        const newReels = reels.map(() => ({
+          spinning: true,
+          position: 0,
+          final: Math.floor(Math.random() * symbolsList.length),
+        }));
+        setReels(newReels);
+
+        // 模拟滚动 + 最终停下
+        newReels.forEach((reel, i) => {
+          let spins = 0;
+          const interval = setInterval(() => {
+            setReels(prev => {
+              const copy = [...prev];
+              copy[i].position = (copy[i].position + 1) % symbolsList.length;
+              return [...copy];
+            });
+            spins++;
+            if (spins > 20 + i * 10) {
+              clearInterval(interval);
+              setReels(prev => {
+                const copy = [...prev];
+                copy[i].spinning = false;
+                copy[i].position = copy[i].final;
+                return [...copy];
+              });
+            }
+          }, 100);
+        });
+
+        // 最终判断中奖（延时等待全部滚完）
+        setTimeout(() => {
+          const finalSymbols = newReels.map(r => symbolsList[r.final]);
+          if (finalSymbols.every(s => s === finalSymbols[0])) {
+            setResult('🎉 恭喜，中奖啦！');
+          } else {
+            setResult('😢 没中奖，再试试！');
+          }
+        }, 2000);
+      };
+
+      return (
+        <div className="slot-machine">
+          <div className="reels">
+            {reels.map((reel, i) => (
+              <div key={i} className="reel">
+                <div
+                  className="symbols"
+                  style={{
+                    transform: `translateY(-${reel.position * 80}px)`,
+                    transition: reel.spinning ? 'none' : 'transform 0.3s ease-out',
+                  }}
+                >
+                  {symbolsList.map((symbol, index) => (
+                    <div key={index} className="symbol">{symbol}</div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button onClick={spinReels}>旋转 🎰</button>
+          <p style={{ marginTop: '20px', fontSize: '1.2rem' }}>{result}</p>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('app'));
+    root.render(<SlotMachine />);
+  </script>
+</body>
+
+</html>
