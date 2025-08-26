@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>H5 离开页面检测 Demo</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 24px;
+    }
+
+    .status {
+      font-size: 18px;
+      margin: 12px 0;
+    }
+
+    button {
+      margin-right: 10px;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>H5 离开页面检测 Demo</h1>
+  <div id="root"></div>
+
+  <!-- React & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script type="text/babel">
+    const { useState, useRef, useEffect, useCallback } = React;
+    const BASE_TITLE = "H5 离开页面检测 Demo";
+
+    /** useAwayTracker Hook 支持自动和手动模式 */
+    function useAwayTracker({ onReturn, manualMode = false }) {
+      const [isAway, setIsAway] = useState(false);
+      const [awaySeconds, setAwaySeconds] = useState(0);
+
+      const awayStartRef = useRef(null);
+      const timerRef = useRef(null);
+
+      const getCurrentAwaySeconds = useCallback(() => {
+        if (!awayStartRef.current) return 0;
+        return Math.floor((Date.now() - awayStartRef.current) / 1000);
+      }, []);
+
+      const startAway = useCallback((reason = "manual:start") => {
+        if (awayStartRef.current) return;
+        awayStartRef.current = Date.now();
+        setIsAway(true);
+        document.title = `【离开中】${BASE_TITLE}`;
+
+        timerRef.current = setInterval(() => {
+          setAwaySeconds(getCurrentAwaySeconds());
+        }, 1000);
+
+        console.debug("[useAwayTracker] startAway:", reason);
+      }, [getCurrentAwaySeconds]);
+
+      const stopAway = useCallback((reason = "manual:stop") => {
+        if (!awayStartRef.current) return;
+        const seconds = Math.floor((Date.now() - awayStartRef.current) / 1000);
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        awayStartRef.current = null;
+
+        setAwaySeconds(seconds);
+        setIsAway(false);
+        document.title = BASE_TITLE;
+
+        console.debug("[useAwayTracker] stopAway:", reason, "awaySeconds=", seconds);
+        if (onReturn) onReturn(seconds, reason);
+
+        setTimeout(() => setAwaySeconds(0), 2000);
+      }, [onReturn]);
+
+      const reset = useCallback(() => {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+        awayStartRef.current = null;
+        setAwaySeconds(0);
+        setIsAway(false);
+        document.title = BASE_TITLE;
+      }, []);
+
+      useEffect(() => {
+        if (manualMode) return; // 手动模式不绑定自动事件
+
+        const handleVisibility = () => {
+          if (document.hidden) {
+            startAway("visibilitychange:hidden");
+          } else {
+            stopAway("visibilitychange:visible");
+          }
+        };
+
+        const handleBlur = () => startAway("window:blur");
+        const handleFocus = () => stopAway("window:focus");
+
+        document.addEventListener("visibilitychange", handleVisibility, true);
+        window.addEventListener("blur", handleBlur, true);
+        window.addEventListener("focus", handleFocus, true);
+
+        return () => {
+          document.removeEventListener("visibilitychange", handleVisibility, true);
+          window.removeEventListener("blur", handleBlur, true);
+          window.removeEventListener("focus", handleFocus, true);
+          clearInterval(timerRef.current);
+        };
+      }, [manualMode, startAway, stopAway]);
+
+      return { isAway, awaySeconds, startAway, stopAway, reset };
+    }
+
+    /** Demo 组件 */
+    function Demo() {
+      const [manualMode, setManualMode] = useState(false);
+      const { isAway, awaySeconds, startAway, stopAway, reset } = useAwayTracker({
+        onReturn: (seconds, reason) => {
+          console.log(`用户离开 ${seconds} 秒后回来（${reason}）`);
+          if (seconds >= 10) {
+            alert("检测到你离开超过 10 秒，自动刷新数据！");
+          }
+        },
+        manualMode
+      });
+
+      return (
+        <div>
+          <div className="status">
+            {isAway
+              ? `当前离开中... 已离开 ${awaySeconds} 秒`
+              : `当前页面活跃中 ✅ (模式: ${manualMode ? "手动" : "自动"})`}
+          </div>
+
+          <div>
+            <button onClick={() => setManualMode(!manualMode)}>
+              切换到 {manualMode ? "自动模式" : "手动模式"}
+            </button>
+            {manualMode && (
+              <>
+                <button onClick={() => startAway()}>手动开始计时</button>
+                <button onClick={() => stopAway()}>手动停止计时</button>
+                <button onClick={() => reset()}>重置</button>
+              </>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<Demo />);
+  </script>
+</body>
+
+</html>
