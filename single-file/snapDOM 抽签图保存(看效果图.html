@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>抽签图生成效果图 Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script type="text/babel" data-type="module">
+    import { snapdom } from "https://cdn.jsdelivr.net/npm/@zumer/snapdom/dist/snapdom.mjs";
+    const { useState, useRef } = React;
+
+    function App() {
+      const [previewUrl, setPreviewUrl] = useState("");
+      const [loading, setLoading] = useState(false);
+      const snapWrapperRef = useRef(null);
+      const snapResultRef = useRef(null);
+
+      const handleGenerate = async () => {
+        setLoading(true);
+        try {
+          const result = await snapdom(snapWrapperRef.current, { scale: 2, backgroundColor: "#fff" });
+          snapResultRef.current = result;
+          const img = await result.toPng();
+          setPreviewUrl(img.src);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const handleSave = async () => {
+        if (!snapResultRef.current) return;
+        await snapResultRef.current.download({ filename: "lottery-result.png" });
+      };
+
+      const imageSrc = "https://fastly.picsum.photos/id/977/200/200.jpg?hmac=bhLVu-kBB_plx-DkWXz4gYn-ViPAhDjTtGFwu143FiA";
+
+      return (
+        <div style={{ padding: 20, fontFamily: "Arial, sans-serif" }}>
+          <h2>抽签图生成效果图 Demo</h2>
+
+          {/* 原始图片 */}
+          <div>
+            <h4>原始抽签图</h4>
+            <img src={imageSrc} alt="抽签图" style={{ width: "50%", display: "block", marginBottom: 16 }} />
+          </div>
+
+          {/* 待捕获的 DOM */}
+          <div
+            ref={snapWrapperRef}
+            style={{
+              display: "inline-block",
+              padding: 20,
+              background: "#fff",
+              borderRadius: 12,
+              textAlign: "center",
+              boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
+              marginTop: 16,
+            }}
+          >
+            <img
+              src={imageSrc}
+              alt="抽签图"
+              crossOrigin="anonymous"
+              style={{
+                width: "80%",
+                borderRadius: 8,
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              }}
+            />
+            <div
+              style={{
+                marginTop: 16,
+                fontSize: 20,
+                fontWeight: 700,
+                background: "linear-gradient(90deg, #FFD700, #FF8C00)",
+                WebkitBackgroundClip: "text",
+                color: "transparent",
+              }}
+            >
+              好运连连 ✨
+            </div>
+            <div style={{ marginTop: 8, fontSize: 14, color: "#555" }}>
+              {new Date().toLocaleDateString()}
+            </div>
+          </div>
+
+          {/* 按钮 */}
+          <div style={{ marginTop: 16 }}>
+            <button onClick={handleGenerate} disabled={loading} style={{ padding: "8px 12px" }}>
+              {loading ? "生成中..." : "生成效果图"}
+            </button>
+            <button onClick={handleSave} disabled={!previewUrl} style={{ marginLeft: 8, padding: "8px 12px" }}>
+              保存效果图
+            </button>
+          </div>
+
+          {/* 预览 */}
+          {previewUrl && (
+            <div style={{ marginTop: 16 }}>
+              <h4>生成效果图预览</h4>
+              <img src={previewUrl} alt="预览效果图" style={{ width: "50%", borderRadius: 12, border: "1px solid #eee" }} />
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<App />);
+  </script>
+</head>
+
+<body style="background:#f5f5f5;">
+  <div id="root"></div>
+</body>
+
+</html>
