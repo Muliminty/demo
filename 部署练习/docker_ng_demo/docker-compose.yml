@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  # Nginx 服务
+  nginx:
+    # 使用官方 Nginx 镜像（无需自己构建，除非有定制需求）
+    image: nginx:alpine # alpine 版本更小，推荐
+    # 容器名称（方便管理）
+    container_name: my-nginx
+    # 端口映射：宿主机 80 端口 → 容器 80 端口
+    ports:
+      - '4040:4040'
+      # 如果需要 HTTPS，再加 443 端口：- "443:443"
+    # 核心：挂载 Nginx 配置和业务代码到容器内
+    volumes:
+      # 将 nginx.conf 挂载为站点配置文件（不是主配置文件）
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/app.conf
+      # 挂载你的业务代码到容器内 Nginx 的默认静态文件目录
+      - ./app:/usr/share/nginx/html
+      # 可选：挂载 Nginx 日志到宿主机，方便查看
+      - ./nginx/logs:/var/log/nginx
+    # 容器重启策略：异常退出时自动重启
+    restart: always
+    # 网络模式（默认桥接，无需修改）
+    networks:
+      - app-network
+
+  # 可选：你的后端服务（比如 Node.js/Java/Python）
+  # backend:
+  #   build: ./backend  # 指向后端代码的 Dockerfile 目录
+  #   container_name: my-backend
+  #   restart: always
+  #   networks:
+  #     - app-network
+
+# 自定义网络（让 Nginx 和后端服务互通）
+networks:
+  app-network:
+    driver: bridge
