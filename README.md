@@ -35,22 +35,22 @@
 
 ### 前端框架
 
-#### 1. [Astro 博客](./astro/blog/README.md)
+#### 1. [Astro 博客](./frontend/astro/blog/README.md)
 使用 Astro 框架搭建的现代化静态博客网站，适合内容型网站快速开发。
 
 **技术栈**：Astro、TypeScript、Tailwind CSS
 
-#### 2. [Svelte 待办事项清单](./Svelte/svelte-todolist/README.md)
+#### 2. [Svelte 待办事项清单](./frontend/svelte/todolist/README.md)
 基于 Svelte 框架的待办事项应用，适合新手学习 Svelte 组件化与状态管理。
 
 **技术栈**：Svelte、JavaScript
 
-#### 3. [Umi 框架 Demo](./umi/umi-demo/)
+#### 3. [Umi 框架 Demo](./frontend/umi/demo/)
 基于 Umi 的前端项目示例，展示路由配置与工程化实践。
 
 **技术栈**：Umi、React、TypeScript
 
-#### 4. [Vue3 + Vite 学习项目](./vite/vue3-learn/README.md)
+#### 4. [Vue3 + Vite 学习项目](./frontend/vue/vue3-learn/README.md)
 Vue3 结合 Vite 的开发实践，包含组件、路由、状态管理等核心功能。
 
 **技术栈**：Vue3、Vite、JavaScript
@@ -59,12 +59,12 @@ Vue3 结合 Vite 的开发实践，包含组件、路由、状态管理等核心
 
 ### 构建工具
 
-#### 5. [Webpack 构建 React 项目](./webpack/webpack_create_react/README.md)
+#### 5. [Webpack 构建 React 项目](./build-tools/webpack/create-react/README.md)
 Webpack 5 搭建 React 19 项目指南，涵盖配置、打包与代码分割。
 
 **技术栈**：Webpack 5、React 19、JavaScript
 
-#### 6. [Vite + Nginx + Docker 部署流程](./vite/Vite_Nginx_Docker_deployment/README.md)
+#### 6. [Vite + Nginx + Docker 部署流程](./build-tools/vite/nginx-docker/README.md)
 完整演示前端项目生产部署，包含 Docker 容器化与 Nginx 反向代理配置。
 
 **技术栈**：Vite、React、Docker、Nginx
@@ -73,17 +73,17 @@ Webpack 5 搭建 React 19 项目指南，涵盖配置、打包与代码分割。
 
 ### 后端框架
 
-#### 7. [NestJS 快速入门](./NestJS/README.md)
+#### 7. [NestJS 快速入门](./backend/nestjs/README.md)
 基于 TypeScript 的渐进式 Node.js 框架示例，包含 Controller、Service、DTO 等核心概念。
 
 **技术栈**：NestJS、TypeScript、Node.js
 
-#### 8. [AI Chat 流式对话](./ai-chat/README.md)
+#### 8. [AI Chat 流式对话](./backend/express/ai-chat/README.md)
 基于 Node.js 的流式响应聊天应用，演示前后端流式数据处理与实时聊天界面实现。
 
 **技术栈**：Node.js、原生 JavaScript、Fetch API
 
-#### 9. [图片代理服务](./server/)
+#### 9. [图片代理服务](./backend/express/image-proxy/)
 基于 Express 的图片代理服务，支持跨域图片访问和代理转发。
 
 **技术栈**：Node.js、Express、CORS
@@ -92,7 +92,7 @@ Webpack 5 搭建 React 19 项目指南，涵盖配置、打包与代码分割。
 
 ### 桌面应用
 
-#### 10. [Electron 桌面应用](./Electron/my-electron-app/README.md)
+#### 10. [Electron 桌面应用](./desktop/electron/my-app/README.md)
 基于 Electron 的跨平台桌面应用开发入门示例，涵盖窗口管理与生命周期。
 
 **技术栈**：Electron、Node.js、HTML/CSS/JS
@@ -101,7 +101,7 @@ Webpack 5 搭建 React 19 项目指南，涵盖配置、打包与代码分割。
 
 ### 工程化工具
 
-#### 11. [工程化脚手架 my-cli](./engineering/my-cli/README.md)
+#### 11. [工程化脚手架 my-cli](./tools/engineering/my-cli/README.md)
 前端脚手架工具开发流程详解，包含脚手架原理、开发流程与常用工具。
 
 **技术栈**：Node.js、CLI 工具
@@ -110,7 +110,7 @@ Webpack 5 搭建 React 19 项目指南，涵盖配置、打包与代码分割。
 
 ### Web 服务器
 
-#### 12. [Nginx 配置与使用](./nginx-1.26.3/README.md)
+#### 12. [Nginx 配置与使用](./infrastructure/nginx/config/README.md)
 Nginx 配置文件、常用场景、日志管理等详细文档，适合 Web 服务部署参考。
 
 **技术栈**：Nginx、反向代理、负载均衡
@@ -119,12 +119,12 @@ Nginx 配置文件、常用场景、日志管理等详细文档，适合 Web 服
 
 ### 原生 HTML/JS 示例
 
-#### 13. [原生 HTML 组件化](./single-file/HTML%20组件化/README.md)
+#### 13. [原生 HTML 组件化](./native/html-components/README.md)
 原生 JavaScript 实现的 HTML 组件化开发方案，包含 `<object>` 与 `fetch` 动态加载两种方式，以及组件通信机制。
 
 **技术栈**：原生 HTML、JavaScript、postMessage API
 
-#### 14. [H5 功能示例](./single-file/)
+#### 14. [H5 功能示例](./native/web-api/)
 包含多个实用的 H5 功能演示：
 - **H5 离开页面检测**：页面离开前的提示与拦截
 - **IntersectionObserver**：元素可见性检测 API 使用示例
@@ -138,7 +138,7 @@ Nginx 配置文件、常用场景、日志管理等详细文档，适合 Web 服
 
 ### 动画与交互
 
-#### 15. [GSAP 动画 Demo](./gsap/gsap_demo/README.md)
+#### 15. [GSAP 动画 Demo](./tools/animation/gsap/README.md)
 基于 GSAP 的动画效果演示，适合学习现代网页动画开发。
 
 **技术栈**：GSAP、React、Vite
@@ -147,7 +147,7 @@ Nginx 配置文件、常用场景、日志管理等详细文档，适合 Web 服
 
 ### 游戏项目
 
-#### 16. [营销游戏集合](./game/)
+#### 16. [营销游戏集合](./games/)
 包含多个营销类小游戏：
 - **老虎机**：经典老虎机游戏实现
 - **大转盘**：抽奖转盘游戏
@@ -197,20 +197,32 @@ Nginx 配置文件、常用场景、日志管理等详细文档，适合 Web 服
 
 ```
 demo/
-├── ai-chat/              # AI 聊天流式响应
-├── astro/                # Astro 博客框架
-├── Electron/             # Electron 桌面应用
-├── engineering/          # 工程化工具
-├── game/                 # 游戏项目集合
-├── gsap/                 # GSAP 动画演示
-├── NestJS/               # NestJS 后端框架
-├── nginx-1.26.3/         # Nginx 配置示例
-├── server/               # 图片代理服务
-├── single-file/          # 原生 HTML/JS 示例
-├── Svelte/               # Svelte 框架示例
-├── umi/                  # Umi 框架示例
-├── vite/                 # Vite 相关项目
-└── webpack/              # Webpack 构建示例
+├── frontend/             # 前端框架
+│   ├── astro/            # Astro 博客框架
+│   ├── svelte/           # Svelte 框架示例
+│   ├── umi/              # Umi 框架示例
+│   └── vue/              # Vue3 学习项目
+├── build-tools/          # 构建工具
+│   ├── webpack/          # Webpack 构建示例
+│   └── vite/             # Vite 相关项目
+├── backend/              # 后端框架
+│   ├── nestjs/           # NestJS 后端框架
+│   └── express/          # Express 相关项目
+│       ├── ai-chat/      # AI 聊天流式响应
+│       └── image-proxy/  # 图片代理服务
+├── desktop/              # 桌面应用
+│   └── electron/         # Electron 桌面应用
+├── tools/                # 工具库与工程化
+│   ├── animation/        # GSAP 动画演示
+│   ├── engineering/      # 工程化工具
+│   └── vscode-extension/ # VSCode 插件开发
+├── infrastructure/       # 基础设施
+│   ├── nginx/            # Nginx 配置示例
+│   └── docker/           # Docker 部署练习
+├── native/               # 原生 Web 技术
+│   ├── html-components/  # HTML 组件化
+│   └── web-api/          # Web API 示例
+└── games/                # 游戏项目集合
 ```
 
 ---
@@ -257,9 +269,3 @@ demo/
 
 - [GitHub Repository](https://github.com/Muliminty/demo)
 - 各子项目详细文档请查看对应目录下的 README.md
-
----
-
-**最后更新**：2025
-
-**维护者**：Muliminty
