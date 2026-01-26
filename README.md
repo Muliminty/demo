@@ -18,6 +18,20 @@
 - [项目统计](#项目统计)
 - [贡献指南](#贡献指南)
 
+
+```
+demo/
+├── frontend/         # 前端框架
+├── build-tools/      # 构建工具
+├── backend/          # 后端框架
+├── desktop/          # 桌面应用
+├── tools/            # 工具库与工程化
+├── infrastructure/   # 基础设施
+├── native/           # 原生 Web 技术
+├── games/            # 游戏项目
+└── drafts/           # 草稿箱
+```
+
 ---
 
 ## 项目简介
