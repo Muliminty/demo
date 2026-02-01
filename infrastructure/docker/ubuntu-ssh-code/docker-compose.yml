@@ -1,0 +1,12 @@
+services:
+  ubuntu-ssh-code:
+    build: .
+    image: ubuntu-ssh-code
+    container_name: ubuntu-ssh-code
+    restart: unless-stopped
+    ports:
+      - "2222:22"
+      - "5173:5173"
+      - "3000:3000"
+    volumes:
+      - ../..:/workspace
