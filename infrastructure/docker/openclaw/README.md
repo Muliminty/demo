@@ -101,6 +101,14 @@ Control UI 是宿主机与容器内 OpenClaw 交互的主要界面，常用操�
 
 若页面打不开或连接失败，先确认 `openclaw-gateway` 已启动（`docker compose ps`），且本机防火墙未拦截 18789 端口。
 
+### 跨域（CORS）说明
+
+浏览器里出现跨域 / CORS 报错时，多半是**页面来源和请求目标不一致**：
+
+- **`localhost` 和 `127.0.0.1` 在浏览器里算不同来源**：若用 `http://localhost:18789/` 打开页面，但页面里的 WebSocket/请求指向 `ws://127.0.0.1:18789`，会被视为跨域并可能被拦截。
+- **做法**：**全程只用一种地址**。建议始终用 **http://127.0.0.1:18789/** 打开 Control UI（书签、地址栏都统一用 `127.0.0.1`）；若习惯用 `localhost`，则始终用 **http://localhost:18789/**，不要混用。
+- 不要从其他域名或端口（如 `file://`、其他站点）打开页面再去连 18789，否则也会跨域。本环境下 Control UI 与 Gateway 同源访问即可避免 CORS 问题。
+
 ---
 
 ## 四、端口与目录说明
@@ -216,6 +224,7 @@ docker compose up -d
 | 启用 read_only 后启动报错 | 可能是 OpenClaw 需要写系统目录；可暂时在 docker-compose.yml 中去掉 `read_only`、`tmpfs` 排查（会降低与宿主机隔离） |
 | 发消息无回复或报错        | 检查是否已配置模型 API（Claude、OpenAI 等）；在 Control UI Config 或 `./data/config` 中配置 API Key 后重启 Gateway |
 | CLI 命令报错「找不到服务」 | 使用 `docker compose run --rm openclaw-cli <子命令>`，不要漏掉 `openclaw-cli`；确保镜像已构建（`docker compose build`） |
+| 浏览器报跨域 / CORS       | 统一用同一地址打开 Control UI：始终用 **http://127.0.0.1:18789/** 或始终用 **http://localhost:18789/**，不要混用 `localhost` 与 `127.0.0.1` |
 
 ---
 
