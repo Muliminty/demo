@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "项目A": "/path/to/project-a",
+    "项目B": "/path/to/project-b",
+    "项目C": "/path/to/project-c"
+  },
+  "output_file": "自动化 git 记录脚本.md"
+}
