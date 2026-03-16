@@ -1,18 +1,13 @@
-import 'dotenv/config';
 import OpenAI from 'openai';
+import { aiConfig } from './get-ai-config.mjs';
 
-const apiKey = process.env.DEEPSEEK_API_KEY;
-const baseURL = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
+const { apiKey, baseURL, model, provider } = aiConfig;
 
 console.log('正在检查 Node.js AI 环境配置...');
-
-if (!apiKey) {
-  console.log('❌ 未找到 DEEPSEEK_API_KEY，请先配置 .env 文件。');
-  process.exit(1);
-}
-
-console.log(`✅ API Key 已读取: ${apiKey.slice(0, 6)}******${apiKey.slice(-4)}`);
-console.log(`📡 当前 Base URL: ${baseURL}`);
+console.log(`✅ 当前厂商: ${provider}`);
+console.log(`✅ API Key: ${apiKey.slice(0, 6)}******${apiKey.slice(-4)}`);
+console.log(`📡 Base URL: ${baseURL}`);
+console.log(`🤖 模型: ${model}`);
 
 const client = new OpenAI({
   apiKey,
@@ -21,7 +16,7 @@ const client = new OpenAI({
 
 try {
   const response = await client.chat.completions.create({
-    model: 'deepseek-chat',
+    model,
     messages: [
       { role: 'system', content: '你是一个有用的 AI 助手。' },
       { role: 'user', content: '你好，请用一句话证明你已经连接成功了。' }

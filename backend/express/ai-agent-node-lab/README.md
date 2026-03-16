@@ -22,7 +22,7 @@ npm install
 cp .env.example .env
 ```
 
-3. 在 `.env` 中填入你自己的 `DEEPSEEK_API_KEY`
+3. 在 `.env` 中填入对应厂商的 API Key（见下方「切换模型」）
 
 4. 运行环境检查
 
@@ -30,9 +30,19 @@ cp .env.example .env
 npm run check
 ```
 
+## 切换模型
+
+在 `.env` 里改 **一行** 即可切换厂商和模型：
+
+- **切换厂商**：`AI_PROVIDER=deepseek` 或 `AI_PROVIDER=aliyun`
+- **指定模型**（可选）：`AI_MODEL=qwen-plus`、`AI_MODEL=qwen-turbo`、`AI_MODEL=deepseek-chat` 等，不填则使用该厂商默认模型
+
+各厂商的 `API_KEY`、`BASE_URL` 在 `.env` 中按区块配置好即可，脚本会根据 `AI_PROVIDER` 自动选用。
+
 ## 当前文件
 
 - `check-env.mjs`：最小模型连通性验证脚本
+- `get-ai-config.mjs`：解析 `AI_PROVIDER` / `AI_MODEL`，供其他脚本复用
 - `.env.example`：环境变量模板
 - `package.json`：项目依赖和脚本
 
