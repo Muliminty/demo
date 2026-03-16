@@ -1,0 +1,14 @@
+{
+  "name": "ai-agent-node-lab",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Node.js AI Agent 学习实验项目",
+  "scripts": {
+    "check": "node check-env.mjs"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "openai": "^4.104.0"
+  }
+}
