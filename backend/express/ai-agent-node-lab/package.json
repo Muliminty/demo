@@ -5,10 +5,13 @@
   "type": "module",
   "description": "Node.js AI Agent 学习实验项目",
   "scripts": {
-    "check": "node check-env.mjs"
+    "check": "node check-env.mjs",
+    "accounting": "node accounting-demo.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
-    "openai": "^4.104.0"
+    "openai": "^4.104.0",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.24.6"
   }
 }
