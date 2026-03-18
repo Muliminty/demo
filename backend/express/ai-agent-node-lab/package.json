@@ -6,7 +6,8 @@
   "description": "Node.js AI Agent 学习实验项目",
   "scripts": {
     "check": "node check-env.mjs",
-    "accounting": "node accounting-demo.mjs"
+    "accounting": "node accounting-demo.mjs",
+    "function-calling": "node function-calling-demo.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
