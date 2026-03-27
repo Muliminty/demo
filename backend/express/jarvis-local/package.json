@@ -1,0 +1,11 @@
+{
+  "name": "jarvis-local",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Jarvis Local: 一个最小可运行的本地个人 AI 助手原型",
+  "scripts": {
+    "dev": "node server.mjs",
+    "start": "node server.mjs"
+  }
+}

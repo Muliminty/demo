@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jarvis Local</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="bg-hud"></div>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">
+          <span class="brand-core"></span>
+          <span class="brand-text">JL</span>
+        </div>
+        <div>
+          <p class="eyebrow">Armor Intelligence</p>
+          <h1>Jarvis Local</h1>
+          <p class="brand-subline">Mark I local operating core</p>
+        </div>
+      </div>
+
+      <button class="ghost-button" id="new-chat-btn">+ New Chat</button>
+
+      <section class="hud-strip">
+        <div class="hud-card">
+          <span class="hud-label">Arc Core</span>
+          <strong>ONLINE</strong>
+        </div>
+        <div class="hud-card">
+          <span class="hud-label">Persona</span>
+          <strong>JARVIS</strong>
+        </div>
+      </section>
+
+      <section class="panel">
+        <p class="panel-label">Core Model</p>
+        <select id="model-select"></select>
+        <p class="hint" id="model-hint">正在读取本地 Ollama 模型...</p>
+      </section>
+
+      <section class="panel">
+        <p class="panel-label">System Status</p>
+        <div class="status-row">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">正在检查 Ollama...</span>
+        </div>
+      </section>
+    </aside>
+
+    <main class="chat-stage">
+      <header class="chat-header">
+        <div class="chat-title-group">
+          <p class="eyebrow">Helmet Interface</p>
+          <h2>本地战甲级助手控制台</h2>
+          <p class="chat-subtitle">钢铁侠风格的深色 HUD 界面，服务于你的本地模型、长期记忆与未来插件系统。</p>
+        </div>
+        <div class="header-actions">
+          <div class="header-pill" id="active-model-pill">CORE MODEL // -</div>
+        </div>
+      </header>
+
+      <section class="messages" id="messages">
+        <div class="messages-inner" id="messages-inner">
+          <article class="message assistant">
+            <div class="avatar">AI</div>
+            <div class="bubble">
+            你好，我已经准备好了。只要你的 Ollama 在本机运行，我就能直接和本地模型对话。
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <form class="composer" id="composer">
+        <textarea id="message-input" placeholder="发一条消息，开始你的本地 Jarvis Local..." rows="1"></textarea>
+        <div class="composer-actions">
+          <span class="composer-tip" id="composer-tip">Enter 发送，Shift + Enter 换行</span>
+          <button type="submit" id="send-btn">发送</button>
+        </div>
+      </form>
+    </main>
+  </div>
+
+  <script src="/app.js"></script>
+</body>
+</html>
